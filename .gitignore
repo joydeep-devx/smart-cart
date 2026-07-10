@@ -1,0 +1,14 @@
+# Compiled binaries
+*.exe
+*.out
+*.o
+
+# VS Code
+.vscode/
+
+# Code::Blocks
+bin/
+obj/
+
+# Dev-C++
+*.layout
