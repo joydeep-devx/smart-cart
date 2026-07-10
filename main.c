@@ -25,6 +25,26 @@ void inputProducts(Product products[], int productNo) {
     }
 }
 
+void findSelectedProducts(Product products[], int productNo, int budget , int dp[productNo + 1][budget + 1]){
+    // tracks selected items
+    int selected[productNo];
+
+    // initialize 
+    for(int i=0;i < productNo;i++){
+        selected[i] = 0;
+    }
+
+    int i = productNo, j = budget;
+
+    while(i > 0 && j > 0){
+        if(dp[i][j] != dp[i-1][j]){
+            selected[i-1] = 1;
+            j -= products[i-1].price;
+        }
+    }
+
+}
+
 // Returns the maximum utility products using DP
 int knapsack(Product products[], int productNo, int budget) {
     int dp[productNo + 1][budget + 1];
@@ -61,8 +81,12 @@ int knapsack(Product products[], int productNo, int budget) {
         }
     }
 
+    // print the selected products
+    findSelectedProducts(products,productNo,budget,dp);
+
     return dp[productNo][budget];
 }
+
 
 int main() {
     int productNo;
@@ -82,6 +106,6 @@ int main() {
 
     int maxUtility = knapsack(products, productNo, budget);
     printf("\nMaximum Utility: %d\n", maxUtility);
-    
+
     return 0;
 }
