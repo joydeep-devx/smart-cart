@@ -51,12 +51,16 @@ void displayResult(Product products[], int productNo, int budget , int selected[
         }
     }
 
-    printf("----------------------------------------------------------\n");
+    if(totalCost == 0){
+        printf("\n");
+        printf("No products can be purchased within the given budget\n");
+        printf("\n");
+    }
 
+    printf("----------------------------------------------------------\n");
     printf("Total Cost               : %d\n", totalCost);
     printf("Maximum Utility          : %d\n", maxUtility);
     printf("Remaining Budget         : %d\n", budget - totalCost);
-
     printf("==========================================================\n");
 }
 
@@ -120,37 +124,86 @@ int knapsack(Product products[], int productNo, int budget , int dp[productNo + 
 }
 
 
-int main() {
+void readProductsFromFile(FILE *file, Product products[], int productNo) {
+    for (int i = 0; i < productNo; i++) {
+        fscanf(file,
+               "%s%d%d",
+               products[i].name,
+               &products[i].price,
+               &products[i].utility);
+    }
+}
+
+// To take input from files
+void fileInputMode() {
+    FILE *file = fopen("./sample-tests/test-case3.txt", "r");
+
+    if (file == NULL) {
+        printf("Error: Unable to open file.\n");
+        return;
+    }
+
     int productNo;
     int budget;
-    
 
-    printf("========== Smart Cart ==========\n");
-    printf("Enter the number of products: ");
-    scanf("%d",&productNo);
+    fscanf(file, "%d", &productNo);
+    fscanf(file, "%d", &budget);
 
-    // An array of products 
     Product products[productNo];
-
-    // Total budget
-    printf("Enter your budget: ");
-    scanf("%d",&budget);
-
     int dp[productNo + 1][budget + 1];
     int selected[productNo];
 
-    // Takes input details of the products
-    inputProducts(products, productNo);
+    readProductsFromFile(file, products, productNo);
 
-    // Create a Dp table and return maxUtility
+    fclose(file);
+
     int maxUtility = knapsack(products, productNo, budget, dp);
 
-    // Construct the final solution array
     findSelectedProducts(products, productNo, budget, dp, selected);
 
-    // display the final solution 
     displayResult(products, productNo, budget, selected, maxUtility);
+}
 
+int main() {
+    int ch;
+    printf("Press 1 for File Input\n");
+    printf("Press 2 for User Input\n");
+    printf("Enter Your Choice : ");
+    scanf("%d",&ch);
+
+    if(ch == 1){
+        fileInputMode();
+    }
+    else {
+        int productNo;
+        int budget;
+    
+        printf("========== Smart Cart ==========\n");
+        printf("Enter the number of products: ");
+        scanf("%d",&productNo);
+
+        // An array of products 
+        Product products[productNo];
+
+        // Total budget
+        printf("Enter your budget: ");
+        scanf("%d",&budget);
+
+        int dp[productNo + 1][budget + 1];
+        int selected[productNo];
+
+        // Takes input details of the products
+        inputProducts(products, productNo);
+
+        // Create a Dp table and return maxUtility
+        int maxUtility = knapsack(products, productNo, budget, dp);
+
+        // Construct the final solution array
+        findSelectedProducts(products, productNo, budget, dp, selected);
+
+        // display the final solution 
+        displayResult(products, productNo, budget, selected, maxUtility);
+    }
 
     return 0;
 }
